@@ -51,7 +51,7 @@ if (options.transport === "http") {
       enableJsonResponse: true,
     },
   });
-  console.error(`fs-mcp HTTP sur http://127.0.0.1:${options.port} (racine : ${options.root})`);
+  console.error(`fs-mcp HTTP sur http://127.0.0.1:${options.port}/mcp (racine : ${options.root})`);
 } else {
   await server.start({ transportType: "stdio" });
 }
