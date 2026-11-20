@@ -1,12 +1,5 @@
 import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import {
-  mkdtempSync,
-  mkdirSync,
-  rmSync,
-  symlinkSync,
-  writeFileSync,
-  realpathSync,
-} from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { resolveSafePath, SandboxError } from "../src/sandbox";
@@ -49,21 +42,15 @@ afterAll(() => {
 
 describe("resolveSafePath : chemins valides", () => {
   test("accepte un chemin simple", async () => {
-    expect(await resolveSafePath(root, "fichier.txt")).toBe(
-      join(root, "fichier.txt"),
-    );
+    expect(await resolveSafePath(root, "fichier.txt")).toBe(join(root, "fichier.txt"));
   });
 
   test("accepte un sous-chemin existant", async () => {
-    expect(await resolveSafePath(root, "sub/a.txt")).toBe(
-      join(root, "sub", "a.txt"),
-    );
+    expect(await resolveSafePath(root, "sub/a.txt")).toBe(join(root, "sub", "a.txt"));
   });
 
   test("accepte un nom contenant '..' sans segment '..'", async () => {
-    expect(await resolveSafePath(root, "a..b.txt")).toBe(
-      join(root, "a..b.txt"),
-    );
+    expect(await resolveSafePath(root, "a..b.txt")).toBe(join(root, "a..b.txt"));
   });
 
   test("accepte la racine elle-même via '.'", async () => {
@@ -77,27 +64,19 @@ describe("resolveSafePath : refus lexicaux", () => {
   });
 
   test("refuse '..' au milieu d'un chemin qui reste dans la racine", async () => {
-    await expect(resolveSafePath(root, "sub/../fichier.txt")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(resolveSafePath(root, "sub/../fichier.txt")).rejects.toThrow(SandboxError);
   });
 
   test("refuse '..' avec séparateur Windows", async () => {
-    await expect(resolveSafePath(root, "..\\secret.txt")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(resolveSafePath(root, "..\\secret.txt")).rejects.toThrow(SandboxError);
   });
 
   test("refuse un chemin absolu POSIX", async () => {
-    await expect(resolveSafePath(root, "/etc/passwd")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(resolveSafePath(root, "/etc/passwd")).rejects.toThrow(SandboxError);
   });
 
   test("refuse un chemin absolu Windows", async () => {
-    await expect(resolveSafePath(root, "C:\\Windows\\win.ini")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(resolveSafePath(root, "C:\\Windows\\win.ini")).rejects.toThrow(SandboxError);
   });
 
   test("refuse un chemin vide", async () => {
@@ -107,43 +86,27 @@ describe("resolveSafePath : refus lexicaux", () => {
 
 describe("resolveSafePath : préfixes trompeurs", () => {
   test("refuse un chemin frère dont le nom commence par celui de la racine", async () => {
-    await expect(
-      resolveSafePath(root, "../racine-2/secret.txt"),
-    ).rejects.toThrow(SandboxError);
+    await expect(resolveSafePath(root, "../racine-2/secret.txt")).rejects.toThrow(SandboxError);
   });
 });
 
 describe("resolveSafePath : liens symboliques", () => {
-  test.skipIf(!canSymlink)(
-    "refuse un fichier existant lié vers l'extérieur",
-    async () => {
-      await expect(resolveSafePath(root, "lien-fichier")).rejects.toThrow(
-        SandboxError,
-      );
-    },
-  );
+  test.skipIf(!canSymlink)("refuse un fichier existant lié vers l'extérieur", async () => {
+    await expect(resolveSafePath(root, "lien-fichier")).rejects.toThrow(SandboxError);
+  });
 
-  test.skipIf(!canSymlink)(
-    "refuse un répertoire lié vers l'extérieur",
-    async () => {
-      await expect(
-        resolveSafePath(root, "lien-dossier/secret.txt"),
-      ).rejects.toThrow(SandboxError);
-    },
-  );
+  test.skipIf(!canSymlink)("refuse un répertoire lié vers l'extérieur", async () => {
+    await expect(resolveSafePath(root, "lien-dossier/secret.txt")).rejects.toThrow(SandboxError);
+  });
 
   test.skipIf(!canSymlink)(
     "refuse une cible inexistante dont l'ancêtre est un lien externe",
     async () => {
-      await expect(
-        resolveSafePath(root, "lien-dossier/nouveau.txt"),
-      ).rejects.toThrow(SandboxError);
+      await expect(resolveSafePath(root, "lien-dossier/nouveau.txt")).rejects.toThrow(SandboxError);
     },
   );
 
   test.skipIf(!canSymlink)("refuse un lien symbolique cassé", async () => {
-    await expect(resolveSafePath(root, "lien-casse")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(resolveSafePath(root, "lien-casse")).rejects.toThrow(SandboxError);
   });
 });

@@ -61,8 +61,7 @@ export function registerTools(server: FastMCP, root: string): void {
 
   server.addTool({
     name: "create_directory",
-    description:
-      "Créer un répertoire. Le parent doit exister et le répertoire ne doit pas exister",
+    description: "Créer un répertoire. Le parent doit exister et le répertoire ne doit pas exister",
     parameters: z.object({ path: pathParam }),
     execute: async ({ path }) => {
       await run(() => ops.createDirectory(root, path));
@@ -74,14 +73,12 @@ export function registerTools(server: FastMCP, root: string): void {
     name: "list_directory",
     description: "Lister le contenu d'un répertoire",
     parameters: z.object({ path: pathParam }),
-    execute: async ({ path }) =>
-      JSON.stringify(await run(() => ops.listDirectory(root, path))),
+    execute: async ({ path }) => JSON.stringify(await run(() => ops.listDirectory(root, path))),
   });
 
   server.addTool({
     name: "delete_directory",
-    description:
-      "Supprimer définitivement un répertoire, récursivement si recursive=true",
+    description: "Supprimer définitivement un répertoire, récursivement si recursive=true",
     parameters: z.object({
       path: pathParam,
       recursive: z.boolean().default(false),

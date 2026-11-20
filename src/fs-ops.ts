@@ -52,22 +52,14 @@ export async function readBinaryFile(root: string, p: string): Promise<string> {
   return (await readRegularFile(root, p)).toString("base64");
 }
 
-export async function writeTextFile(
-  root: string,
-  p: string,
-  content: string,
-): Promise<void> {
+export async function writeTextFile(root: string, p: string, content: string): Promise<void> {
   assertWithinLimit(Buffer.byteLength(content, "utf8"), `Le contenu de ${p}`);
   const abs = await resolveSafePath(root, p);
   if (await isDirectory(abs)) throw new FsOpError(`Est un répertoire : ${p}`);
   await writeFile(abs, content, "utf8");
 }
 
-export async function writeBinaryFile(
-  root: string,
-  p: string,
-  base64: string,
-): Promise<void> {
+export async function writeBinaryFile(root: string, p: string, base64: string): Promise<void> {
   assertWithinLimit(base64ByteLength(base64), `Le contenu de ${p}`);
   const data = Buffer.from(base64, "base64");
   const abs = await resolveSafePath(root, p);
@@ -78,8 +70,7 @@ export async function writeBinaryFile(
 export async function deleteFile(root: string, p: string): Promise<void> {
   const abs = await resolveSafePath(root, p);
   const st = await lstat(abs);
-  if (st.isDirectory())
-    throw new FsOpError(`Est un répertoire, utiliser delete_directory : ${p}`);
+  if (st.isDirectory()) throw new FsOpError(`Est un répertoire, utiliser delete_directory : ${p}`);
   await unlink(abs);
 }
 
@@ -88,10 +79,7 @@ export async function createDirectory(root: string, p: string): Promise<void> {
   await mkdir(abs);
 }
 
-export async function listDirectory(
-  root: string,
-  p: string,
-): Promise<DirEntry[]> {
+export async function listDirectory(root: string, p: string): Promise<DirEntry[]> {
   const abs = await resolveSafePath(root, p);
   const st = await stat(abs);
   if (!st.isDirectory()) throw new FsOpError(`Pas un répertoire : ${p}`);
@@ -108,11 +96,7 @@ export async function listDirectory(
   }));
 }
 
-export async function deleteDirectory(
-  root: string,
-  p: string,
-  recursive: boolean,
-): Promise<void> {
+export async function deleteDirectory(root: string, p: string, recursive: boolean): Promise<void> {
   const abs = await resolveSafePath(root, p);
   if (abs === root) throw new SandboxError("Suppression de la racine refusée");
   const st = await lstat(abs);
@@ -125,18 +109,12 @@ export async function deleteDirectory(
 }
 
 // Renames a file or a directory. Refuses to overwrite an existing target.
-export async function renamePath(
-  root: string,
-  from: string,
-  to: string,
-): Promise<void> {
+export async function renamePath(root: string, from: string, to: string): Promise<void> {
   const absFrom = await resolveSafePath(root, from);
   const absTo = await resolveSafePath(root, to);
   if (absFrom === root) throw new SandboxError("Renommage de la racine refusé");
-  if (!(await existsNoFollow(absFrom)))
-    throw new FsOpError(`Source introuvable : ${from}`);
-  if (await existsNoFollow(absTo))
-    throw new FsOpError(`La cible existe déjà : ${to}`);
+  if (!(await existsNoFollow(absFrom))) throw new FsOpError(`Source introuvable : ${from}`);
+  if (await existsNoFollow(absTo)) throw new FsOpError(`La cible existe déjà : ${to}`);
   await rename(absFrom, absTo);
 }
 

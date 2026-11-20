@@ -9,9 +9,7 @@ export class LimitError extends Error {
 
 export function assertWithinLimit(bytes: number, label: string): void {
   if (bytes > MAX_BYTES) {
-    throw new LimitError(
-      `${label} dépasse la limite de ${MAX_BYTES} octets (${bytes} octets)`,
-    );
+    throw new LimitError(`${label} dépasse la limite de ${MAX_BYTES} octets (${bytes} octets)`);
   }
 }
 

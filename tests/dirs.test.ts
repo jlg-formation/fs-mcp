@@ -1,12 +1,5 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import {
-  mkdtempSync,
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-  existsSync,
-  realpathSync,
-} from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, existsSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as ops from "../src/fs-ops";
@@ -38,9 +31,7 @@ describe("création de répertoire", () => {
   });
 
   test("refuse hors racine", async () => {
-    await expect(ops.createDirectory(root, "../d")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.createDirectory(root, "../d")).rejects.toThrow(SandboxError);
   });
 });
 
@@ -86,16 +77,12 @@ describe("suppression de répertoire", () => {
   });
 
   test("refuse de supprimer la racine", async () => {
-    await expect(ops.deleteDirectory(root, ".", true)).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.deleteDirectory(root, ".", true)).rejects.toThrow(SandboxError);
     expect(existsSync(root)).toBe(true);
   });
 
   test("refuse de supprimer hors racine", async () => {
-    await expect(ops.deleteDirectory(root, "..", true)).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.deleteDirectory(root, "..", true)).rejects.toThrow(SandboxError);
   });
 });
 
@@ -114,9 +101,7 @@ describe("renommage de répertoire", () => {
 
   test("refuse de déplacer un répertoire hors racine", async () => {
     mkdirSync(join(root, "d"));
-    await expect(ops.renamePath(root, "d", "../d")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.renamePath(root, "d", "../d")).rejects.toThrow(SandboxError);
     expect(existsSync(join(root, "d"))).toBe(true);
   });
 });

@@ -54,9 +54,7 @@ describe("fichiers texte", () => {
 
   test("refus d'écrire un contenu de plus de 1 Mo", async () => {
     const content = "a".repeat(MAX_BYTES + 1);
-    await expect(ops.writeTextFile(root, "big.txt", content)).rejects.toThrow(
-      LimitError,
-    );
+    await expect(ops.writeTextFile(root, "big.txt", content)).rejects.toThrow(LimitError);
     expect(existsSync(join(root, "big.txt"))).toBe(false);
   });
 
@@ -71,9 +69,7 @@ describe("fichiers texte", () => {
   });
 
   test("refus d'écrire hors racine", async () => {
-    await expect(ops.writeTextFile(root, "../evil.txt", "x")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.writeTextFile(root, "../evil.txt", "x")).rejects.toThrow(SandboxError);
   });
 
   test("refus de lire un répertoire comme fichier", async () => {
@@ -87,24 +83,18 @@ describe("fichiers binaires", () => {
     const bytes = Buffer.from([0, 1, 2, 250, 255]);
     await ops.writeBinaryFile(root, "b.bin", bytes.toString("base64"));
     expect(readFileSync(join(root, "b.bin"))).toEqual(bytes);
-    expect(await ops.readBinaryFile(root, "b.bin")).toBe(
-      bytes.toString("base64"),
-    );
+    expect(await ops.readBinaryFile(root, "b.bin")).toBe(bytes.toString("base64"));
   });
 
   test("refus d'écrire un base64 décodant à plus de 1 Mo", async () => {
     const b64 = Buffer.alloc(MAX_BYTES + 1, 1).toString("base64");
-    await expect(ops.writeBinaryFile(root, "big.bin", b64)).rejects.toThrow(
-      LimitError,
-    );
+    await expect(ops.writeBinaryFile(root, "big.bin", b64)).rejects.toThrow(LimitError);
     expect(existsSync(join(root, "big.bin"))).toBe(false);
   });
 
   test("refus de lire un binaire de plus de 1 Mo", async () => {
     writeFileSync(join(root, "big.bin"), Buffer.alloc(MAX_BYTES + 1, 1));
-    await expect(ops.readBinaryFile(root, "big.bin")).rejects.toThrow(
-      LimitError,
-    );
+    await expect(ops.readBinaryFile(root, "big.bin")).rejects.toThrow(LimitError);
   });
 
   test("calcul de la taille décodée base64", () => {
@@ -131,9 +121,7 @@ describe("renommage de fichier", () => {
 
   test("refuse un renommage vers l'extérieur", async () => {
     writeFileSync(join(root, "a.txt"), "x");
-    await expect(ops.renamePath(root, "a.txt", "../a.txt")).rejects.toThrow(
-      SandboxError,
-    );
+    await expect(ops.renamePath(root, "a.txt", "../a.txt")).rejects.toThrow(SandboxError);
     expect(existsSync(join(root, "a.txt"))).toBe(true);
   });
 });

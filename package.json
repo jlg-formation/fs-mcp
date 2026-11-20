@@ -7,7 +7,11 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "start:http": "bun run src/index.ts --root workspace-test --transport http --port 1974 --cors",
-    "test": "bun test"
+    "test": "bun test",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "fastmcp": "^4.23.5",
@@ -15,6 +19,8 @@
   },
   "devDependencies": {
     "@types/bun": "^1.4.3",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
     "typescript": "^7.0.2"
   }
 }

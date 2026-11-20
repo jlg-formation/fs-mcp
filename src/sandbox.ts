@@ -1,14 +1,5 @@
 import { lstat, realpath } from "node:fs/promises";
-import {
-  dirname,
-  isAbsolute,
-  join,
-  posix,
-  relative,
-  resolve,
-  sep,
-  win32,
-} from "node:path";
+import { dirname, isAbsolute, join, posix, relative, resolve, sep, win32 } from "node:path";
 
 export class SandboxError extends Error {
   constructor(message: string) {
@@ -29,11 +20,7 @@ function assertRelativeInput(userPath: string): void {
   if (typeof userPath !== "string" || userPath.length === 0) {
     throw new SandboxError("Chemin vide");
   }
-  if (
-    isAbsolute(userPath) ||
-    posix.isAbsolute(userPath) ||
-    win32.isAbsolute(userPath)
-  ) {
+  if (isAbsolute(userPath) || posix.isAbsolute(userPath) || win32.isAbsolute(userPath)) {
     throw new SandboxError(`Chemin absolu refusé : ${userPath}`);
   }
   if (userPath.split(/[\\/]+/).includes("..")) {
@@ -50,18 +37,14 @@ async function nearestExisting(path: string): Promise<string> {
       return probe;
     } catch {
       const parent = dirname(probe);
-      if (parent === probe)
-        throw new SandboxError(`Aucun ancêtre existant : ${path}`);
+      if (parent === probe) throw new SandboxError(`Aucun ancêtre existant : ${path}`);
       probe = parent;
     }
   }
 }
 
 // `root` must already be a real (symlink-free) absolute path.
-export async function resolveSafePath(
-  root: string,
-  userPath: string,
-): Promise<string> {
+export async function resolveSafePath(root: string, userPath: string): Promise<string> {
   assertRelativeInput(userPath);
 
   const candidate = resolve(root, userPath);
@@ -79,9 +62,7 @@ export async function resolveSafePath(
 
   const realFull = join(realExisting, relative(existing, candidate));
   if (!isWithin(root, realFull)) {
-    throw new SandboxError(
-      `Chemin hors de la racine refusé (lien symbolique) : ${userPath}`,
-    );
+    throw new SandboxError(`Chemin hors de la racine refusé (lien symbolique) : ${userPath}`);
   }
 
   return candidate;
