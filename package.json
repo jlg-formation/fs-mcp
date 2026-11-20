@@ -1,0 +1,20 @@
+{
+  "name": "fs-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Serveur MCP exposant un système de fichiers confiné à une racine (POC local)",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "start:http": "bun run src/index.ts --root workspace-test --transport http --port 1974 --cors",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "fastmcp": "^4.23.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3",
+    "typescript": "^7.0.2"
+  }
+}
